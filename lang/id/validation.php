@@ -1,0 +1,40 @@
+<?php
+
+return [
+    'array' => ':attribute harus berupa daftar.',
+    'boolean' => ':attribute harus bernilai benar atau salah.',
+    'confirmed' => 'Konfirmasi :attribute tidak sesuai.',
+    'distinct' => ':attribute memuat nilai yang sama.',
+    'email' => ':attribute harus berupa alamat email yang valid.',
+    'exists' => ':attribute yang dipilih tidak valid.',
+    'integer' => ':attribute harus berupa angka.',
+    'max' => [
+        'string' => ':attribute maksimal :max karakter.',
+    ],
+    'regex' => 'Format :attribute tidak valid.',
+    'required' => ':attribute wajib diisi.',
+    'string' => ':attribute harus berupa teks.',
+    'unique' => ':attribute sudah digunakan.',
+    'password' => [
+        'letters' => ':attribute harus memuat sedikitnya satu huruf.',
+        'mixed' => ':attribute harus memuat huruf besar dan huruf kecil.',
+        'numbers' => ':attribute harus memuat sedikitnya satu angka.',
+        'symbols' => ':attribute harus memuat sedikitnya satu simbol.',
+        'uncompromised' => ':attribute pernah muncul dalam kebocoran data. Pilih kata sandi lain.',
+    ],
+    'attributes' => [
+        'desa_ids' => 'penugasan desa',
+        'email' => 'alamat email',
+        'identifier' => 'email atau username',
+        'is_active' => 'status akun',
+        'kabupaten_id' => 'kabupaten',
+        'kecamatan_id' => 'kecamatan',
+        'kode' => 'kode wilayah',
+        'name' => 'nama lengkap',
+        'nama' => 'nama wilayah',
+        'password' => 'kata sandi',
+        'phone' => 'nomor telepon',
+        'role' => 'role',
+        'username' => 'username',
+    ],
+];
