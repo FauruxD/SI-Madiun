@@ -20,7 +20,11 @@ class KabupatenController extends Controller
     public function index(): View
     {
         return view('admin.wilayah.kabupaten.index', [
-            'kabupatens' => Kabupaten::query()->withCount('kecamatans')->orderBy('nama')->paginate(15),
+            'kabupatens' => Kabupaten::query()
+                ->withCount('kecamatans')
+                ->orderBy('nama')
+                ->orderBy('id')
+                ->paginate(15),
         ]);
     }
 

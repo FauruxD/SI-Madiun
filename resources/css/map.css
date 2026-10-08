@@ -1,0 +1,13 @@
+.geo-map { width: 100%; font-family: var(--font-sans); }
+.geo-map:focus-visible { outline: 3px solid #047857; outline-offset: -3px; }
+.geo-map .leaflet-control-zoom a { width: 44px; height: 44px; line-height: 44px; }
+.geo-map .leaflet-control-attribution { font-size: 10px; max-width: 100%; }
+.geo-map .leaflet-popup-content { max-width: 220px; overflow-wrap: anywhere; line-height: 1.6; }
+.geo-map .leaflet-popup-content strong { display: block; font-size: 14px; }
+.geo-map .leaflet-popup-content a { display: inline-flex; min-height: 44px; align-items: center; color: #065f46; font-weight: 700; }
+.geo-map .leaflet-popup-close-button { width: 36px; height: 36px; }
+.geo-pin, .geo-editor-pin { background: none; border: none; }
+.geo-pin span { display: grid; place-items: center; width: 30px; height: 30px; border: 2px solid white; background: #064e3b; color: white; font: bold 12px/1 var(--font-sans); border-radius: 50%; box-shadow: 0 1px 4px #0003; }
+.geo-editor-pin span { display: grid; place-items: center; width: 28px; height: 28px; background: white; color: #065f46; border: 2px solid #047857; border-radius: 50%; font: bold 11px/1 var(--font-sans); }
+.geo-map a:focus-visible, .geo-map button:focus-visible { outline: 2px solid #047857; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .geo-map * { transition: none !important; animation: none !important; } }

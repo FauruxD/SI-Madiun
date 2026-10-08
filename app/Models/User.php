@@ -40,10 +40,29 @@ class User extends Authenticatable
         return $this->belongsToMany(Desa::class, 'user_desa')->withTimestamps();
     }
 
+    /** @return BelongsToMany<KawasanPerdesaan, $this> */
+    public function kawasans(): BelongsToMany
+    {
+        return $this->belongsToMany(KawasanPerdesaan::class, 'user_kawasan', 'user_id', 'kawasan_id')
+            ->withTimestamps();
+    }
+
     /** @return HasMany<ActivityLog, $this> */
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class);
+    }
+
+    /** @return HasMany<EProposal, $this> */
+    public function eproposals(): HasMany
+    {
+        return $this->hasMany(EProposal::class, 'submitted_by');
+    }
+
+    /** @return HasMany<ReviewEProposal, $this> */
+    public function reviewedEproposals(): HasMany
+    {
+        return $this->hasMany(ReviewEProposal::class, 'reviewer_id');
     }
 
     public function hasRole(UserRole ...$roles): bool

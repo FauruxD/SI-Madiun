@@ -21,7 +21,12 @@ class KecamatanController extends Controller
     public function index(): View
     {
         return view('admin.wilayah.kecamatan.index', [
-            'kecamatans' => Kecamatan::query()->with('kabupaten')->withCount('desas')->orderBy('nama')->paginate(15),
+            'kecamatans' => Kecamatan::query()
+                ->with('kabupaten')
+                ->withCount('desas')
+                ->orderBy('nama')
+                ->orderBy('id')
+                ->paginate(15),
         ]);
     }
 
@@ -31,7 +36,7 @@ class KecamatanController extends Controller
     public function create(): View
     {
         return view('admin.wilayah.kecamatan.create', [
-            'kabupatens' => Kabupaten::query()->orderBy('nama')->get(),
+            'kabupatens' => Kabupaten::query()->orderBy('nama')->orderBy('id')->get(),
         ]);
     }
 
@@ -53,7 +58,7 @@ class KecamatanController extends Controller
     {
         return view('admin.wilayah.kecamatan.edit', [
             'kecamatan' => $kecamatan,
-            'kabupatens' => Kabupaten::query()->orderBy('nama')->get(),
+            'kabupatens' => Kabupaten::query()->orderBy('nama')->orderBy('id')->get(),
         ]);
     }
 

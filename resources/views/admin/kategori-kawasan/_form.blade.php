@@ -1,0 +1,6 @@
+<div class="grid gap-6 sm:grid-cols-2">
+    <div><label for="nama" class="form-label">Nama kategori</label><input id="nama" name="nama" value="{{ old('nama', $category?->nama) }}" required class="form-input"><x-input-error name="nama" /></div>
+    <div><label for="kode" class="form-label">Kode</label><input id="kode" name="kode" value="{{ old('kode', $category?->kode) }}" required class="form-input" placeholder="AGROWISATA"><p class="mt-1.5 text-xs text-stone-500">Otomatis dinormalisasi menjadi huruf kapital dan garis bawah.</p><x-input-error name="kode" /></div>
+    <div class="sm:col-span-2"><label for="deskripsi" class="form-label">Deskripsi</label><textarea id="deskripsi" name="deskripsi" rows="4" class="form-input">{{ old('deskripsi', $category?->deskripsi) }}</textarea><x-input-error name="deskripsi" /></div>
+    <div class="sm:col-span-2"><input type="hidden" name="is_active" value="0"><label class="selection-card w-fit"><input type="checkbox" name="is_active" value="1" @checked((bool) old('is_active', $category?->is_active ?? true)) class="size-4 text-emerald-800 focus:ring-emerald-700"><span><strong class="block text-stone-950">Kategori aktif</strong><span class="mt-1 block text-xs text-stone-500">Kategori aktif dapat dipilih untuk kawasan baru.</span></span></label><x-input-error name="is_active" /></div>
+</div>

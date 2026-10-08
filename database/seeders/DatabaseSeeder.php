@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(KategoriKawasanSeeder::class);
+        $this->call(KategoriPotensiSeeder::class);
+
         $kabupaten = Kabupaten::query()->updateOrCreate(
             ['kode' => '35.19'],
             ['nama' => 'Kabupaten Madiun'],
@@ -65,5 +68,7 @@ class DatabaseSeeder extends Seeder
         $users->firstWhere('role', UserRole::AdminDesa)?->desas()->sync([
             $desa->firstOrFail()->id,
         ]);
+
+        $this->call(DemoDomainSeeder::class);
     }
 }

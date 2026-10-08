@@ -38,6 +38,7 @@ class UserController extends Controller
             })
             ->when($request->filled('role'), fn ($query) => $query->where('role', $request->string('role')->value()))
             ->orderBy('name')
+            ->orderBy('id')
             ->paginate(15)
             ->withQueryString();
 
@@ -56,7 +57,7 @@ class UserController extends Controller
 
         return view('admin.users.create', [
             'roles' => UserRole::cases(),
-            'desas' => Desa::query()->with('kecamatan')->orderBy('nama')->get(),
+            'desas' => Desa::query()->with('kecamatan')->orderBy('nama')->orderBy('id')->get(),
         ]);
     }
 
@@ -90,7 +91,7 @@ class UserController extends Controller
         return view('admin.users.edit', [
             'managedUser' => $user,
             'roles' => UserRole::cases(),
-            'desas' => Desa::query()->with('kecamatan')->orderBy('nama')->get(),
+            'desas' => Desa::query()->with('kecamatan')->orderBy('nama')->orderBy('id')->get(),
         ]);
     }
 
@@ -108,7 +109,7 @@ class UserController extends Controller
             ]);
         }
 
-        $changed = DB::transaction(function () use ($validated, $user): array {
+        $changes = DB::transaction(function () use ($validated, $user): array {
             $userData = Arr::except($validated, ['desa_ids']);
 
             if (blank($userData['password'] ?? null)) {
@@ -119,11 +120,18 @@ class UserController extends Controller
             $changed = array_keys($user->getDirty());
             $user->save();
             $this->syncDesaAssignments($user, $validated['desa_ids'] ?? []);
+            $detachedKawasanIds = $this->detachInvalidKawasanAssignments($user);
 
-            return $changed;
+            return ['changed_fields' => $changed, 'detached_kawasan_ids' => $detachedKawasanIds];
         });
 
-        $recordActivity->execute('user.updated', $user, ['changed_fields' => $changed], $request->user(), $request->ip());
+        $recordActivity->execute('user.updated', $user, ['changed_fields' => $changes['changed_fields']], $request->user(), $request->ip());
+
+        if ($changes['detached_kawasan_ids'] !== []) {
+            $recordActivity->execute('kawasan.admins.detached_by_role_change', $user, [
+                'kawasan_ids' => $changes['detached_kawasan_ids'],
+            ], $request->user(), $request->ip());
+        }
 
         return redirect()->route('admin.users.index')->with('status', 'Akun berhasil diperbarui.');
     }
@@ -132,5 +140,18 @@ class UserController extends Controller
     private function syncDesaAssignments(User $user, array $desaIds): void
     {
         $user->desas()->sync($user->role === UserRole::AdminDesa ? $desaIds : []);
+    }
+
+    /** @return array<int, int> */
+    private function detachInvalidKawasanAssignments(User $user): array
+    {
+        if ($user->role === UserRole::AdminKawasan) {
+            return [];
+        }
+
+        $assignedKawasanIds = $user->kawasans()->pluck('kawasan_perdesaan.id')->all();
+        $user->kawasans()->detach();
+
+        return $assignedKawasanIds;
     }
 }

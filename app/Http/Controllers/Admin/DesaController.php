@@ -21,7 +21,12 @@ class DesaController extends Controller
     public function index(): View
     {
         return view('admin.wilayah.desa.index', [
-            'desas' => Desa::query()->with('kecamatan.kabupaten')->withCount('users')->orderBy('nama')->paginate(15),
+            'desas' => Desa::query()
+                ->with('kecamatan.kabupaten')
+                ->withCount('users')
+                ->orderBy('nama')
+                ->orderBy('id')
+                ->paginate(15),
         ]);
     }
 
@@ -31,7 +36,7 @@ class DesaController extends Controller
     public function create(): View
     {
         return view('admin.wilayah.desa.create', [
-            'kecamatans' => Kecamatan::query()->with('kabupaten')->orderBy('nama')->get(),
+            'kecamatans' => Kecamatan::query()->with('kabupaten')->orderBy('nama')->orderBy('id')->get(),
         ]);
     }
 
@@ -69,7 +74,7 @@ class DesaController extends Controller
     {
         return view('admin.wilayah.desa.edit', [
             'desa' => $desa,
-            'kecamatans' => Kecamatan::query()->with('kabupaten')->orderBy('nama')->get(),
+            'kecamatans' => Kecamatan::query()->with('kabupaten')->orderBy('nama')->orderBy('id')->get(),
         ]);
     }
 
@@ -91,8 +96,8 @@ class DesaController extends Controller
     {
         Gate::authorize('delete', $desa);
 
-        if ($desa->users()->exists()) {
-            return back()->withErrors(['desa' => 'Desa masih ditugaskan kepada pengguna dan tidak dapat dihapus.']);
+        if ($desa->users()->exists() || $desa->kawasans()->exists()) {
+            return back()->withErrors(['desa' => 'Desa masih digunakan pada assignment pengguna atau kawasan dan tidak dapat dihapus.']);
         }
 
         $recordActivity->execute('wilayah.desa.deleted', $desa, ['nama' => $desa->nama], $request->user(), $request->ip());

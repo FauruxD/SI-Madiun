@@ -33,7 +33,38 @@
                         <a href="{{ route('admin.desa.index') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('admin.kabupaten.*', 'admin.kecamatan.*', 'admin.desa.*')]) @if(request()->routeIs('admin.kabupaten.*', 'admin.kecamatan.*', 'admin.desa.*')) aria-current="page" @endif>
                             <span class="nav-marker"></span><span>Master Wilayah</span>
                         </a>
+                        <a href="{{ route('admin.kawasan.index') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('admin.kawasan.*', 'admin.kategori-kawasan.*')]) @if(request()->routeIs('admin.kawasan.*', 'admin.kategori-kawasan.*')) aria-current="page" @endif>
+                            <span class="nav-marker"></span><span>Kawasan Perdesaan</span>
+                        </a>
                     @endif
+                    <a href="{{ route('peta.manage') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('peta.*')]) @if(request()->routeIs('peta.*')) aria-current="page" @endif>
+                        <span class="nav-marker"></span><span>Peta & Geospasial</span>
+                    </a>
+                    @can('viewAny', \App\Models\Bumdes::class)
+                        <a href="{{ route('bumdes.index') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('bumdes.index', 'bumdes.create', 'bumdes.show', 'bumdes.edit')]) @if(request()->routeIs('bumdes.index', 'bumdes.create', 'bumdes.show', 'bumdes.edit')) aria-current="page" @endif>
+                            <span class="nav-marker"></span><span>BUMDes & BUMDesma</span>
+                        </a>
+                    @endcan
+                    @can('viewAny', \App\Models\PotensiDesa::class)
+                        <p class="px-3 pb-1 pt-5 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-300/65">Potensi</p>
+                        <a href="{{ route('potensi-desa.index') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('potensi-desa.*', 'admin.kategori-potensi.*')]) @if(request()->routeIs('potensi-desa.*', 'admin.kategori-potensi.*')) aria-current="page" @endif>
+                            <span class="nav-marker"></span><span>Potensi Desa</span>
+                        </a>
+                    @endcan
+                    @can('viewAny', \App\Models\EProposal::class)
+                        <a href="{{ route('admin.eproposal.index') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('admin.eproposal.*') && ! request()->routeIs('admin.eproposal.review.*')]) @if(request()->routeIs('admin.eproposal.*') && ! request()->routeIs('admin.eproposal.review.*')) aria-current="page" @endif>
+                            <span class="nav-marker"></span><span>E-Proposal</span>
+                        </a>
+                    @endcan
+                    @can('reviewAny', \App\Models\EProposal::class)
+                        <a href="{{ route('admin.eproposal.review.index') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('admin.eproposal.review.*')]) @if(request()->routeIs('admin.eproposal.review.*')) aria-current="page" @endif><span class="nav-marker"></span><span>Verifikasi Proposal</span></a>
+                    @endcan
+                    @can('viewAny', \App\Models\RencanaAksi::class)
+                        <p class="px-3 pb-1 pt-5 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-300/65">Kinerja</p>
+                        <a href="{{ route('rencana-aksi.index') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('rencana-aksi.*', 'bumdes.rencana-aksi.*')]) @if(request()->routeIs('rencana-aksi.*', 'bumdes.rencana-aksi.*')) aria-current="page" @endif>
+                            <span class="nav-marker"></span><span>Rencana & Realisasi</span>
+                        </a>
+                    @endcan
                     <a href="{{ route('profile.edit') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('profile.*')]) @if(request()->routeIs('profile.*')) aria-current="page" @endif>
                         <span class="nav-marker"></span><span>Profil Saya</span>
                     </a>
@@ -62,6 +93,10 @@
                     <p class="mt-1 text-sm font-medium text-stone-800">{{ now()->translatedFormat('l, d F Y') }}</p>
                 </div>
                 <div class="ml-auto flex items-center gap-3">
+                    <a href="{{ route('admin.eproposal.index') }}#proposal-notifications" class="relative grid size-10 place-items-center border border-stone-300 bg-white text-stone-700 transition hover:border-emerald-800 hover:text-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800" aria-label="Notifikasi E-Proposal, {{ $unreadProposalNotifications }} belum dibaca">
+                        <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 8h18c0-1-3-1-3-8M10 21h4"/></svg>
+                        @if ($unreadProposalNotifications > 0)<span class="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-amber-300 px-1 text-[10px] font-bold text-amber-950">{{ $unreadProposalNotifications }}</span>@endif
+                    </a>
                     <div class="hidden text-right sm:block">
                         <p class="text-sm font-semibold">{{ auth()->user()->name }}</p>
                         <p class="text-xs text-stone-500">{{ auth()->user()->role->shortLabel() }}</p>
