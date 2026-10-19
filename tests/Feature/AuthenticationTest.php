@@ -14,6 +14,15 @@ class AuthenticationTest extends TestCase
 {
     use LazilyRefreshDatabase;
 
+    public function test_login_brand_links_to_public_home_page_on_desktop_and_mobile(): void
+    {
+        $response = $this->get(route('login'));
+
+        $response->assertSee('aria-label="Buka beranda publik"', false);
+
+        $this->assertSame(2, substr_count($response->getContent(), 'href="'.route('public.home').'"'));
+    }
+
     public function test_user_can_login_with_email_and_login_is_audited(): void
     {
         $user = User::factory()->adminDesa()->create(['password' => 'Password123']);

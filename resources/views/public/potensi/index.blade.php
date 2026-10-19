@@ -38,7 +38,8 @@
                             <a href="{{ route('katalog-potensi.show', $potential) }}" class="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-800">
                                 <div class="relative aspect-[4/3] overflow-hidden bg-stone-200">
                                     @if ($potential->coverImage)
-                                        <img src="{{ route('katalog-potensi.media', [$potential, $potential->coverImage]) }}" alt="{{ $potential->coverImage->judul ?: 'Foto '.$potential->judul }}" class="size-full object-cover transition duration-500 group-hover:scale-[1.025] motion-reduce:transition-none">
+                                        <img data-public-image src="{{ route('katalog-potensi.media', [$potential, $potential->coverImage]) }}" alt="{{ $potential->coverImage->judul ?: 'Foto '.$potential->judul }}" class="size-full object-cover transition duration-500 group-hover:scale-[1.025] motion-reduce:transition-none">
+                                        <div data-public-image-fallback hidden class="grid size-full place-items-center bg-emerald-900 px-8 text-center"><span class="font-display text-3xl text-emerald-100/70">{{ $potential->category->nama }}</span></div>
                                     @else
                                         <div class="grid size-full place-items-center bg-emerald-900 px-8 text-center"><span class="font-display text-3xl text-emerald-100/70">{{ $potential->category->nama }}</span></div>
                                     @endif

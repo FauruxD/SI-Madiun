@@ -26,7 +26,8 @@
                 <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-12">
                     @foreach ($images as $image)
                         <figure @class(['overflow-hidden bg-stone-200', 'lg:col-span-8' => $loop->first, 'lg:col-span-4' => ! $loop->first])>
-                            <img src="{{ route('katalog-potensi.media', [$potential, $image]) }}" alt="{{ $image->judul ?: 'Foto '.$potential->judul }}" @class(['w-full object-cover', 'aspect-[16/10]' => $loop->first, 'aspect-[4/3]' => ! $loop->first])>
+                            <img data-public-image src="{{ route('katalog-potensi.media', [$potential, $image]) }}" alt="{{ $image->judul ?: 'Foto '.$potential->judul }}" @class(['w-full object-cover', 'aspect-[16/10]' => $loop->first, 'aspect-[4/3]' => ! $loop->first])>
+                            <div data-public-image-fallback hidden @class(['grid w-full place-items-center bg-emerald-900 p-6 text-center', 'aspect-[16/10]' => $loop->first, 'aspect-[4/3]' => ! $loop->first])><span class="font-display text-2xl text-emerald-100">{{ $potential->category->nama }}</span></div>
                             @if ($image->judul)<figcaption class="bg-white px-4 py-3 text-xs text-stone-600">{{ $image->judul }}</figcaption>@endif
                         </figure>
                     @endforeach

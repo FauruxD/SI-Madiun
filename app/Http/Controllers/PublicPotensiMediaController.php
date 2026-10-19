@@ -16,8 +16,11 @@ class PublicPotensiMediaController extends Controller
             ->where('tipe_media', TipeMediaPotensi::Image->value)
             ->whereNotNull('file_path')
             ->findOrFail($media);
+        $storage = Storage::disk(config('potensi.images.disk'));
 
-        return Storage::disk(config('potensi.images.disk'))->response(
+        abort_if($storage->missing($image->file_path), 404);
+
+        return $storage->response(
             $image->file_path,
             $image->nama_file,
             ['Content-Type' => $image->mime_type],

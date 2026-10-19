@@ -11,6 +11,7 @@ use App\Http\Requests\StoreRencanaAksiRequest;
 use App\Http\Requests\UpdateRencanaAksiRequest;
 use App\Models\Bumdes;
 use App\Models\RencanaAksi;
+use App\UserRole;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,10 +28,20 @@ class RencanaAksiController extends Controller
 
         $year = $request->integer('tahun');
         $year = $year >= 2000 && $year <= ((int) date('Y') + 10) ? $year : (int) date('Y');
+        $availableBumdes = Bumdes::query()
+            ->visibleTo($user)
+            ->select(['id', 'nama'])
+            ->orderBy('nama')
+            ->get();
+        $selectedBumdes = $request->filled('bumdes_id')
+            ? Bumdes::query()->visibleTo($user)->select(['id', 'nama'])->findOrFail($request->integer('bumdes_id'))
+            : null;
+        $canCreatePlans = $user->isSuperAdmin() || $user->role === UserRole::AdminDesa;
         $plans = RencanaAksi::query()
             ->visibleTo($user)
             ->with(['bumdes', 'realizations' => fn ($query) => $query->orderBy('periode_ke')])
             ->where('tahun', $year)
+            ->when($selectedBumdes !== null, fn ($query) => $query->where('bumdes_id', $selectedBumdes->id))
             ->when($request->filled('search'), function ($query) use ($request): void {
                 $search = '%'.$request->string('search')->trim()->value().'%';
                 $query->where(function ($plans) use ($search): void {
@@ -57,7 +68,16 @@ class RencanaAksiController extends Controller
             ->sortDesc()
             ->values();
 
-        return view('rencana-aksi.index', compact('plans', 'snapshots', 'availableYears', 'year'));
+        return view('rencana-aksi.index', [
+            'plans' => $plans,
+            'snapshots' => $snapshots,
+            'availableYears' => $availableYears,
+            'availableBumdes' => $availableBumdes,
+            'selectedBumdes' => $selectedBumdes,
+            'canCreatePlans' => $canCreatePlans,
+            'periodOptions' => ActionPeriod::cases(),
+            'year' => $year,
+        ]);
     }
 
     public function create(Request $request, int $bumdes): View

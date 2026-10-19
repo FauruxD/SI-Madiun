@@ -54,6 +54,34 @@ class RencanaAksiTest extends TestCase
             ->assertSeeText('Program Kawasan Selatan');
     }
 
+    public function test_admin_desa_can_open_plan_input_for_an_owned_bumdes_from_the_matrix(): void
+    {
+        [$admin, $ownedBumdes] = $this->assigned();
+        $ownedBumdes->update(['nama' => 'BUMDes Amanah Milik Admin']);
+        $otherBumdes = Bumdes::factory()->create(['nama' => 'BUMDes Di Luar Kewenangan']);
+
+        $this->actingAs($admin)
+            ->get(route('rencana-aksi.index', ['bumdes_id' => $ownedBumdes->id, 'tahun' => now()->year]))
+            ->assertOk()
+            ->assertSeeText('2. Input rencana kerja tahunan')
+            ->assertSeeText('BUMDes Amanah Milik Admin')
+            ->assertSee('action="'.route('bumdes.rencana-aksi.store', $ownedBumdes).'"', false)
+            ->assertSeeText('Simpan & lanjut input realisasi')
+            ->assertDontSeeText('BUMDes Di Luar Kewenangan');
+
+        $this->assertDatabaseHas(Bumdes::class, ['id' => $otherBumdes->id]);
+    }
+
+    public function test_admin_desa_cannot_select_an_unassigned_bumdes_from_the_plan_matrix(): void
+    {
+        [$admin] = $this->assigned();
+        $otherBumdes = Bumdes::factory()->create(['nama' => 'BUMDes Bukan Penugasan']);
+
+        $this->actingAs($admin)
+            ->get(route('rencana-aksi.index', ['bumdes_id' => $otherBumdes->id]))
+            ->assertNotFound();
+    }
+
     public function test_public_user_is_redirected_from_action_plan_endpoint(): void
     {
         $this->get(route('rencana-aksi.index'))->assertRedirect(route('login'));
@@ -105,6 +133,12 @@ class RencanaAksiTest extends TestCase
         $bumdes->desas()->attach($desa, ['is_desa_utama' => true]);
         $plan = RencanaAksi::factory()->for($bumdes, 'bumdes')->create(['tahun' => now()->year]);
 
+        $this->actingAs($admin)
+            ->get(route('rencana-aksi.index', ['bumdes_id' => $bumdes->id]))
+            ->assertOk()
+            ->assertSeeText('Mode pemantauan')
+            ->assertSeeText('Lihat realisasi')
+            ->assertDontSeeText('Simpan & lanjut input realisasi');
         $this->actingAs($admin)->get(route('bumdes.rencana-aksi.show', [$bumdes, $plan]))->assertOk();
         $this->actingAs($admin)->post(route('bumdes.rencana-aksi.store', $bumdes), $this->payload())->assertForbidden();
     }

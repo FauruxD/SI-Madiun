@@ -18,6 +18,17 @@ class PublicPortalTest extends TestCase
 {
     use LazilyRefreshDatabase;
 
+    public function test_public_home_uses_the_provided_madiun_image_as_hero_background(): void
+    {
+        $response = $this->get(route('public.home'));
+
+        $response
+            ->assertSee('src="'.asset('images/madiun2.jpg').'"', false)
+            ->assertSee('fetchpriority="high"', false);
+
+        $this->assertFileExists(public_path('images/madiun2.jpg'));
+    }
+
     public function test_home_only_exposes_records_that_pass_their_publication_gates(): void
     {
         $established = KawasanPerdesaan::factory()->ditetapkan()->create(['nama' => 'Kawasan Publik Lereng Wilis']);

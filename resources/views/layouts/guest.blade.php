@@ -16,13 +16,17 @@
                 <div class="absolute -left-12 top-32 size-96 rounded-full border border-emerald-200/20"></div>
                 <div class="absolute bottom-0 right-0 h-2/3 w-2/3 bg-[radial-gradient(circle_at_bottom_right,rgba(251,191,36,.2),transparent_64%)]"></div>
             </div>
-            <div class="relative flex items-center gap-4">
+            <a
+                href="{{ route('public.home') }}"
+                class="relative flex w-fit items-center gap-4 transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-300"
+                aria-label="Buka beranda publik"
+            >
                 <div class="grid size-12 place-items-center border border-white/30 bg-white/10 font-display text-xl">MI</div>
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-200">Kabupaten Madiun</p>
                     <p class="mt-1 font-semibold">Kawasan Perdesaan</p>
                 </div>
-            </div>
+            </a>
             <div class="relative max-w-2xl">
                 <p class="mb-5 text-sm font-semibold uppercase tracking-[0.24em] text-amber-300">Satu data, keputusan lebih baik</p>
                 <h1 class="font-display text-5xl leading-[1.04] text-balance xl:text-6xl">Ruang kerja terpadu untuk potensi desa yang bertumbuh.</h1>
@@ -33,13 +37,17 @@
 
         <section class="flex min-h-screen items-center justify-center px-5 py-10 sm:px-10 lg:px-14">
             <div class="w-full max-w-md">
-                <div class="mb-10 flex items-center gap-3 lg:hidden">
+                <a
+                    href="{{ route('public.home') }}"
+                    class="mb-10 flex w-fit items-center gap-3 transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-800 lg:hidden"
+                    aria-label="Buka beranda publik"
+                >
                     <div class="grid size-11 place-items-center bg-emerald-900 font-display text-lg text-white">MI</div>
                     <div>
                         <p class="text-xs font-bold uppercase tracking-[0.16em] text-emerald-800">Kabupaten Madiun</p>
                         <p class="text-sm font-semibold">Kawasan Perdesaan</p>
                     </div>
-                </div>
+                </a>
                 @include('partials.flash')
                 {{ $slot }}
                 <p class="mt-10 border-t border-stone-300 pt-5 text-xs leading-5 text-stone-500">Akses terbatas untuk pengelola resmi. Seluruh aktivitas masuk dicatat untuk menjaga akuntabilitas data.</p>

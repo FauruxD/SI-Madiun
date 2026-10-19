@@ -19,13 +19,28 @@ class AuthorizationTest extends TestCase
     public function test_each_role_gets_its_role_aware_dashboard(): void
     {
         $users = [
-            ['user' => User::factory()->superAdmin()->create(), 'label' => 'Super Admin'],
-            ['user' => User::factory()->adminKawasan()->create(), 'label' => 'Admin Kawasan'],
-            ['user' => User::factory()->adminDesa()->create(), 'label' => 'Admin Desa'],
+            ['user' => User::factory()->superAdmin()->create(['name' => 'Operator Super Admin']), 'label' => 'Super Admin'],
+            ['user' => User::factory()->adminKawasan()->create(['name' => 'Operator Admin Kawasan']), 'label' => 'Admin Kawasan'],
+            ['user' => User::factory()->adminDesa()->create(['name' => 'Operator Admin Desa']), 'label' => 'Admin Desa'],
         ];
 
         foreach ($users as $item) {
-            $this->actingAs($item['user'])->get(route('dashboard'))->assertOk()->assertSee($item['label']);
+            $response = $this->actingAs($item['user'])->get(route('dashboard'));
+
+            $response->assertOk()
+                ->assertSee($item['label'])
+                ->assertSee('href="'.route('public.home').'"', false)
+                ->assertSee('aria-label="Buka beranda publik"', false)
+                ->assertSee('scrollbar-none', false)
+                ->assertSee('data-account-menu-toggle', false)
+                ->assertSee('id="sidebar-account-menu" data-account-menu hidden', false)
+                ->assertSee('action="'.route('logout').'"', false);
+            $content = $response->getContent();
+            $this->assertSame(1, substr_count($content, $item['user']->name));
+            $this->assertTrue(
+                strpos($content, 'id="sidebar-account-menu"') < strpos($content, 'data-account-menu-toggle'),
+                'Menu logout harus dirender di atas identitas akun pada sidebar.',
+            );
         }
     }
 

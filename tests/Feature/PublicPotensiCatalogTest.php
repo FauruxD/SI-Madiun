@@ -91,6 +91,15 @@ class PublicPotensiCatalogTest extends TestCase
         $this->get(route('katalog-potensi.media', [$draft, $draftMedia]))->assertNotFound();
     }
 
+    public function test_public_image_endpoint_returns_not_found_when_stored_file_is_missing(): void
+    {
+        Storage::fake('local');
+        $published = PotensiDesa::factory()->published()->create();
+        $media = MediaPotensi::factory()->for($published, 'potential')->create();
+
+        $this->get(route('katalog-potensi.media', [$published, $media]))->assertNotFound();
+    }
+
     public function test_public_catalog_escapes_user_content(): void
     {
         $potential = PotensiDesa::factory()->published()->create(['judul' => '<script>alert(1)</script>']);
